@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+
+<GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="414.0" prefWidth="597.0" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1">
+      <columnConstraints>
+          <ColumnConstraints hgrow="SOMETIMES" maxWidth="394.0" minWidth="10.0" percentWidth="30.0" prefWidth="315.0" />
+          <ColumnConstraints hgrow="SOMETIMES" percentWidth="40.0" />
+          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="30.0" prefWidth="100.0" />
+      </columnConstraints>
+      <rowConstraints>
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+          <RowConstraints maxHeight="20.0" minHeight="20.0" percentHeight="0.0" prefHeight="20.0" vgrow="NEVER" />
+      </rowConstraints>
+      <children>
+          <ListView fx:id="ListViewWords" onMouseClicked="#listViewClicked" prefHeight="200.0" prefWidth="200.0" GridPane.rowSpan="2" />
+          <ListView fx:id="ListViewTranslates" onMouseClicked="#listViewClicked" prefHeight="407.0" prefWidth="182.0" GridPane.columnIndex="2" GridPane.rowSpan="2" />
+          <TableView fx:id="tableView" onMouseClicked="#tableViewClicked" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1">
+              <columns>
+                  <TableColumn fx:id="tableViewWord" minWidth="120.0" prefWidth="-1.0" text="Слово" />
+                  <TableColumn fx:id="tableViewTranslate" minWidth="120.0" prefWidth="-1.0" text="Перевод" />
+              </columns>
+          </TableView>
+          <Button fx:id="OkBtn" alignment="CENTER" mnemonicParsing="false" onAction="#clickNext" prefHeight="25.0" prefWidth="666.0" text="NEXT" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
+      </children>
+  </GridPane>
