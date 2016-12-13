@@ -1,116 +1,87 @@
-package tests.Test1;
+package tests.Test2;
 
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.Initializable;
+import javafx.event.ActionEvent;
+import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
 
-import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.input.MouseButton;
-import javafx.scene.input.MouseEvent;
-import mainApp.MainApp;
-import mainApp.TableData;
-
-import javax.xml.transform.TransformerException;
-import java.io.IOException;
 import java.net.URL;
 import java.util.*;
+
+import mainApp.AccountData;
+import mainApp.MainApp;
 
 public class ControllerTest implements Initializable
 {
 
     MainTest Main;
 
-    public ObservableList<TableData> Result = FXCollections.observableArrayList();
-    public TableColumn tableViewWord;
-    public TableColumn tableViewTranslate;
-    public TableView tableView;
-    public ListView<String> ListViewTranslates;
-    public ListView<String> ListViewWords;
+    public ListView<String> listView;
+    public Label label;
 
-    String selectedObj;
-
-    public ControllerTest(MainTest Main)
-    {
-        this.Main = Main;
-    }
-
-    //Добавление слов в таблицы
     @Override
     public void initialize(URL location, ResourceBundle resources)
     {
-        ListViewWords.setItems(Main.Words);
-        ListViewTranslates.setItems(Main.Translates);
-
-        tableViewWord.setCellValueFactory(new PropertyValueFactory<TableData, String>("Word"));
-        tableViewTranslate.setCellValueFactory(new PropertyValueFactory<TableData, String>("Translates"));
-        tableView.setItems(Result);
-
+        label.setText(label.getText() + Main.Word);
+        listView.setItems(Main.Translates);
     }
 
-    //Нажатие на один из элементов таблицы
-    public void listViewClicked(MouseEvent mouseEvent)
+    //Нажатие на кнопку NEXT во втором или третьем тесте
+    public void clickOK(ActionEvent ev) throws Exception
     {
-        ListView thisList = (ListView)mouseEvent.getSource();
-        String nowSelectObj = (String)thisList.getSelectionModel().getSelectedItem();
-        if(selectedObj == nowSelectObj)
-        {
-            thisList.getSelectionModel().clearSelection();
-            selectedObj = null;
-        }
-        else
-            selectedObj = (String) thisList.getSelectionModel().getSelectedItem();
 
-        String wordObj = ListViewWords.getSelectionModel().getSelectedItem();
-        String translateObj = ListViewTranslates.getSelectionModel().getSelectedItem();
-        if(wordObj != null && translateObj != null)
-        {
-            Main.Words.remove(wordObj);
-            Main.Translates.remove(translateObj);
-            Result.add(new TableData(wordObj, translateObj));
-            ListViewWords.getSelectionModel().clearSelection();
-            ListViewTranslates.getSelectionModel().clearSelection();
-        }
-    }
+        String selectedItem = listView.getSelectionModel().getSelectedItem();
 
-    //Двойное нажатие на кнопку
-    public void tableViewClicked(MouseEvent mouseEvent)
-    {
-        if(mouseEvent.getButton().equals(MouseButton.PRIMARY))
-        {
-            if(mouseEvent.getClickCount() == 2)
+        //Если тест второй
+        if(Main.Test == 1) {
+            if (MainApp.ACCOUNT.WordBase.get(Main.Word).contains(selectedItem))
             {
-                TableData td = (TableData) tableView.getSelectionModel().getSelectedItem();
-                if(td != null)
+                MainApp.ACCOUNT.inLearningGet(Main.Word).upStage(false);
+                for(AccountData.InLearning s : MainApp.ACCOUNT.inLearningGet(Main.Translates))
                 {
-                    Result.remove(td);
-                    Main.Words.add(td.getWord());
-                    Main.Translates.add(td.getTranslates());
+                    s.upStage(false);
                 }
-            }
-        }
-    }
-
-    //Нажатие на кнопку NEXT
-    public void clickNext(ActionEvent actionEvent) throws IOException, TransformerException
-    {
-        for (TableData td : Result)
-        {
-            if (!MainApp.ACCOUNT.WordBase.get(td.getWord()).contains(td.getTranslates()))
-            {
-                MainApp.ACCOUNT.UnSuccessfulList[0].add(td.getWord());
+                MainApp.ACCOUNT.Nodes.saveXML();
+                MainApp.ACCOUNT.SuccessfulList[1].add(Main.Word);
+                Main.result = true;
+                Main.Close();
             }
             else
             {
-                MainApp.ACCOUNT.inLearningGet(td.getWord()).upStage(false);
-                MainApp.ACCOUNT.SuccessfulList[0].add(td.getWord());
+                MainApp.ACCOUNT.UnSuccessfulList[1].add(Main.Word);
+                Main.result = false;
+                Main.Close();
             }
         }
 
-        MainApp.ACCOUNT.Nodes.saveXML();
-        Main.result = true;
-        Main.Close();
+        //Если тест третий
+        else
+        {
+            if(MainApp.ACCOUNT.WordBase.get(selectedItem).contains(Main.Word))
+            {
+                MainApp.ACCOUNT.inLearningGet(selectedItem).upStage(false);
+                for(AccountData.InLearning s : MainApp.ACCOUNT.inLearningGet(Main.Translates))
+                {
+                    s.upStage(false);
+                }
+                MainApp.ACCOUNT.Nodes.saveXML();
+                MainApp.ACCOUNT.SuccessfulList[2].add(selectedItem);
+                Main.result = true;
+                Main.Close();
+            }
+            else
+            {
+                MainApp.ACCOUNT.UnSuccessfulList[2].add(selectedItem);
+                Main.result = false;
+                Main.Close();
+            }
+        }
+
+    }
+
+    public ControllerTest(MainTest main)
+    {
+        Main = main;
     }
 
 

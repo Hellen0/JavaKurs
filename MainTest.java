@@ -1,4 +1,4 @@
-package tests.Test1;
+package tests.Test2;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -9,38 +9,41 @@ import javafx.stage.Stage;
 
 import java.util.List;
 
-public class MainTest {
+public class MainTest
+{
 
-    public ObservableList<String> Words = FXCollections.observableArrayList();
+    public boolean result;
+    public int Test;
+
+    public String Word;
     public ObservableList<String> Translates = FXCollections.observableArrayList();
-    public boolean result = false;
-
-    Stage primaryStageMain;
-    Stage thisStage;
+    private Stage thisStage;
+    private Stage primaryStageMain;
 
     //Создание окна
-    public MainTest(Stage primaryStageMain, List<String> Words, List<String> Translates) throws Exception {
-        this.primaryStageMain = primaryStageMain;
+    public MainTest(Stage primaryStageMain, String Word, List<String> Translates, int Test) throws Exception
+    {
+        this.Test = Test;
         primaryStageMain.hide();
-
+        this.primaryStageMain = primaryStageMain;
         this.Translates.addAll(Translates);
-        this.Words.addAll(Words);
-
-        ControllerTest test = new ControllerTest(this);
+        this.Word = Word;
 
         result = false;
         thisStage = new Stage();
+        if(Test == 1) thisStage.setTitle("Second Test");
+        else if(Test == 2) thisStage.setTitle("Third Test");
+        ControllerTest test = new ControllerTest(this);
         FXMLLoader loader = new FXMLLoader(getClass().getResource("test.fxml"));
         loader.setController(test);
         Parent rootMain = loader.load();
-        thisStage.setTitle("First Test");
-        thisStage.setScene(new Scene(rootMain));
+        thisStage.setScene(new Scene(rootMain));//Ы
         thisStage.setOnCloseRequest(event -> onClosing(primaryStageMain));
         thisStage.showAndWait();
     }
 
     //Закрытие окна
-    public static void onClosing(Stage primaryStageMain)
+    public void onClosing(Stage primaryStageMain)
     {
         primaryStageMain.show();
     }
@@ -50,4 +53,6 @@ public class MainTest {
         onClosing(primaryStageMain);
         thisStage.close();
     }
+
+
 }
